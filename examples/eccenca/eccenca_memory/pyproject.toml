@@ -1,0 +1,22 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools >= 64", "setuptools-scm>=8"]
+
+[tool.setuptools_scm]
+root = "../../.."
+
+[project]
+name = "eccenca_memory"
+dynamic = ["version"]
+dependencies = [
+  "aiqtoolkit[langchain]~=1.2"
+]
+requires-python = ">=3.12"
+description = "Agent AIQ Workflow to save the long term memory in a knowledge graph"
+classifiers = ["Programming Language :: Python"]
+
+[tool.uv.sources]
+aiqtoolkit = { path = "../../..", editable = true }
+
+[project.entry-points.'aiq.components']
+eccenca_memory = "eccenca_memory.register"

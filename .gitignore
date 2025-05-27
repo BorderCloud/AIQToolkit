@@ -220,3 +220,8 @@ examples/rag/compose/volumes
 
 # End of https://www.gitignore.io/api/vim,c++,cmake,python,synology
 /.idea
+
+
+.env_key
+# example in the doc
+workflow.yaml

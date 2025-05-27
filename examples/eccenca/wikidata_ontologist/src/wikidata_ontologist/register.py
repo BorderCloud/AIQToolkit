@@ -1,0 +1,3 @@
+from wikidata_ontologist import WikidataPropertyLookup_function
+from wikidata_ontologist import WikidataTypeLookup_function
+from wikidata_ontologist import local_wikidata_lookup

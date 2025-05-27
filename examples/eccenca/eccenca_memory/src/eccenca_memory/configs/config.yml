@@ -1,0 +1,85 @@
+general:
+  use_uvloop: true
+  logging:
+    console:
+      _type: console
+      level: WARN
+
+  front_end:
+    _type: fastapi
+
+  front_end:
+    _type: console
+
+functions:
+  fact2graph:
+    _type: fact2graph
+    llm_name: gpt-4_1_llm
+    verbose: true
+  question2response:
+    _type: question2response
+    llm_name: gpt-4_1_llm
+    verbose: true
+
+llms:
+  nim_llm:
+    _type: nim
+    model_name: meta/llama-3.1-70b-instruct
+    temperature: 0.0
+    #max_tokens: 250
+  gpt-4_1_llm:
+    _type: openai
+    model_name: gpt-4.1
+    # max_tokens: 2000
+
+workflow:
+  _type: react_agent
+  tool_names: [fact2graph,question2response]
+  llm_name: gpt-4_1_llm
+  verbose: true
+  handle_parsing_errors: false
+  max_retries: 5
+  system_prompt: |
+      You save the fact of the input with tools and you resolve a question in the input with tools.
+      You have access only to the following tools:  
+        {tools}
+
+      The name of tools:
+      {tool_names} 
+
+      Thought: Analyze and break down the original text of the input.
+              If it's not a question into smaller fact, simpler fact, or else into smaller questions, simpler questions.
+      Action: 
+              For each fact or question found:
+                - If it is a **fact**, use the tool [fact2graph].
+                - If it is a **question**, use the tool [question2response].
+      Action Input: 
+              Use the following format when invoking tools:
+                  - For facts: {{"query": "<fact>"}}
+                  - For questions: {{"query": "<question>"}}
+              IMPORTANT:
+                - The entire input must be a valid JSON object (use double quotes as required).
+                - NEVER include single quotes or apostrophes (like in "user's") inside the query string. Instead, rewrite such phrases to avoid contractions.
+                  Example: "user's dog" → "dog belonging to the user"
+                - Do NOT wrap the entire object in extra quotes.
+      Observation: Wait all the responses.
+      Final Answer: Concat all the observations. Do not rephrase the observations — send it exactly as is.
+
+      Important formatting rules (do not break these):
+      - Each `Thought:` must be directly followed by an `Action:`, then `Action Input:`.
+      - Only output a single tool action (Action + Action Input) per turn. Wait for the tool output before continuing.
+      - Do not omit or rename these labels.
+      - Never output empty `Action Input`.
+      - If you don't have any Action to perform, explain why in the Final Answer — do NOT leave empty fields.
+      - Do not an `Action:` with the output of a previous Action:`
+      - The output of `Action:` is never a new input for a new `Thought:`
+      - When a tool says things like "I don't know", or similar expressions, you must treat these as a lack of information. 
+        Do not log or store such responses as factual data. These are not assertions or knowledge, but expressions of ignorance or uncertainty.
+      - When a tool says things like "there is an error in the query", or similar expressions, you must treat these as a lack of information. 
+        Do not log or store such responses as factual data. These are not assertions or knowledge, but expressions of ignorance or uncertainty.
+      - When you see a sentence that clearly states the final answer (e.g., 'X is the response' or 'X is the answer'), you must stop the tool-calling process. 
+        Do not rephrase, store, or pass this result to another tool. Simply return the answer to the user.
+
+      If you fail to follow this format, the system will discard your response and retry.
+
+#TODO ? use https://lov.linkeddata.es/dataset/lov/sparql

@@ -1,0 +1,48 @@
+general:
+  use_uvloop: true
+  logging:
+    console:
+      _type: console
+      level: DEBUG
+  front_end:
+    _type: fastapi
+
+memory:
+  knowledge_graph:
+    _type: eccenca_memory
+    # Not implemented but necessary in theory with a real service online
+    connection_url: "http://localhost:8002"
+    
+functions:
+  current_datetime:
+    _type: current_datetime
+  add_memory:
+    _type: add_memory
+    memory: knowledge_graph
+    description: |
+      Add  information shared during the conversation by the user. Only consider information about the user if it is explicitly stated by them. 
+      The input to this tool should be a string that describes the shared information by the user, not the question or answer.
+  get_memory:
+    _type: get_memory
+    memory: knowledge_graph
+    description: |
+      Call this tool only if the user ask you a question.
+      Use the same question that the user asked you with exactly the same syntax.
+
+llms:
+  nim_llm:
+    _type: nim
+    model_name: meta/llama-3.1-70b-instruct
+    temperature: 0.0
+    max_tokens: 1024
+
+workflow:
+  _type: react_agent
+  tool_names: 
+      - current_datetime
+      - add_memory
+      - get_memory
+  llm_name: nim_llm
+  verbose: true
+  retry_parsing_errors: true
+  max_retries: 3

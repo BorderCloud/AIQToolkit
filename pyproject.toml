@@ -62,6 +62,8 @@ langchain = ["aiqtoolkit-langchain"]
 llama-index = ["aiqtoolkit-llama-index"]
 mem0ai = ["aiqtoolkit-mem0ai"]
 semantic-kernel = ["aiqtoolkit-semantic-kernel"]
+eccenca = ["aiqtoolkit-eccenca"]
+
 telemetry = [
   "arize-phoenix~=6.1",
   "opentelemetry-api~=1.2",
@@ -81,7 +83,10 @@ examples = [
   "aiq_swe_bench",
   "aiq_automated_description_generation",
   "aiq_agno_personal_finance",
-  "aiq_profiler_agent"
+  "aiq_profiler_agent",
+  "wikidata_ontologist",
+  "eccenca_agent_demo",
+  "eccenca_memory",
 ]
 
 profiling = [
@@ -106,6 +111,7 @@ aiqtoolkit-test = { workspace = true }
 aiqtoolkit-zep-cloud = { workspace = true }
 aiqtoolkit-agno = { workspace = true }
 aiqtoolkit-weave = { workspace = true }
+aiqtoolkit-eccenca = { workspace = true }
 
 # All examples here
 aiq_alert_triage_agent = { path = "examples/alert_triage_agent", editable = true }
@@ -119,7 +125,9 @@ aiq_swe_bench = { path = "examples/swe_bench", editable = true }
 aiq_automated_description_generation = { path = "examples/automated_description_generation", editable = true }
 aiq_agno_personal_finance = { path = "examples/agno_personal_finance", editable = true }
 aiq_profiler_agent = {path = "examples/profiler_agent", editable = true}
-
+wikidata_ontologist = {path = "examples/eccenca/wikidata_ontologist", editable = true}
+eccenca_agent_demo = {path = "examples/eccenca/eccenca_agent_demo", editable = true}
+eccenca_memory = {path = "examples/eccenca/eccenca_memory", editable = true}
 
 [tool.uv.workspace]
 members = ["packages/*"]
@@ -202,7 +210,7 @@ markers = [
 filterwarnings = [
   # Add warnings to ignore as a part of pytest here
 ]
-testpaths = ["tests", "examples/*/tests", "packages/*/tests"]
+testpaths = ["tests", "examples/*/tests", "packages/*/tests", "examples/eccenca/*/tests"]
 asyncio_mode = "auto"
 pytest_plugins = ["aiqtoolkit-test"]
 
@@ -890,7 +898,7 @@ skip = [
 ]
 known_first_party = ["aiq"]
 # Need to declare known third party for namespace packages which have the same name
-known_third_party = ["langchain", "llama_index", "crewai", "semantic_kernel", "mem0ai", "zep_cloud", "agno"]
+known_third_party = ["langchain", "llama_index", "crewai", "semantic_kernel", "mem0ai", "zep_cloud", "agno","eccenca"]
 namespace_packages = ["aiq", "aiq.plugins"]
 
 [tool.flake8]
